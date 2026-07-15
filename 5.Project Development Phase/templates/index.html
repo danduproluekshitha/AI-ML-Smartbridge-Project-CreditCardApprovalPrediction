@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Ledger — New Application{% endblock %}
+{% block content %}
+<p class="eyebrow">Screening model — {{ best_model }}</p>
+<h1 class="page-title">Enter the applicant's financial profile</h1>
+<p class="page-sub">This form is shared by analysts, compliance officers, and customers. The scoring model and decision logic are identical for everyone — only the surrounding context differs.</p>
+
+<div class="role-toggle" id="roleToggle">
+  <button data-role="analyst" class="active">Analyst</button>
+  <button data-role="compliance">Compliance officer</button>
+  <button data-role="customer">Customer</button>
+</div>
+
+<div class="sheet">
+  <form id="appForm">
+    <div class="grid-2">
+      <div class="field">
+        <label for="income_type">Income type</label>
+        <select name="income_type" id="income_type">
+          {% for opt in categories.income_type %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="annual_income">Annual income (USD)</label>
+        <input type="number" name="annual_income" id="annual_income" value="48000" min="0">
+      </div>
+      <div class="field">
+        <label for="employment_years">Employment duration (years)</label>
+        <input type="number" name="employment_years" id="employment_years" value="4" min="0" step="0.1">
+      </div>
+      <div class="field">
+        <label for="age_years">Applicant age</label>
+        <input type="number" name="age_years" id="age_years" value="34" min="18">
+      </div>
+      <div class="field">
+        <label for="education">Education</label>
+        <select name="education" id="education">
+          {% for opt in categories.education %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="family_status">Family status</label>
+        <select name="family_status" id="family_status">
+          {% for opt in categories.family_status %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="housing_type">Housing type</label>
+        <select name="housing_type" id="housing_type">
+          {% for opt in categories.housing_type %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="occupation_type">Occupation</label>
+        <select name="occupation_type" id="occupation_type">
+          {% for opt in categories.occupation_type %}<option value="{{ opt }}">{{ opt }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="num_children">Children</label>
+        <input type="number" name="num_children" id="num_children" value="0" min="0">
+      </div>
+      <div class="field">
+        <label for="family_size">Family size</label>
+        <input type="number" name="family_size" id="family_size" value="1" min="1">
+      </div>
+      <div class="field">
+        <label for="credit_history_months">Credit history length (months)</label>
+        <input type="number" name="credit_history_months" id="credit_history_months" value="36" min="0">
+      </div>
+      <div class="field">
+        <label for="existing_loan_balance">Existing loan balance (USD)</label>
+        <input type="number" name="existing_loan_balance" id="existing_loan_balance" value="8000" min="0">
+      </div>
+      <div class="field">
+        <label for="num_credit_lines">Open credit lines</label>
+        <input type="number" name="num_credit_lines" id="num_credit_lines" value="2" min="0">
+      </div>
+      <div class="field">
+        <label for="owns_car">Owns a car</label>
+        <select name="owns_car" id="owns_car"><option value="1">Yes</option><option value="0">No</option></select>
+      </div>
+      <div class="field">
+        <label for="owns_realty">Owns real estate</label>
+        <select name="owns_realty" id="owns_realty"><option value="1">Yes</option><option value="0">No</option></select>
+      </div>
+    </div>
+    <button type="submit" class="btn-primary">Score application</button>
+  </form>
+
+  <div id="result" style="display:none;">
+    <div class="verdict-wrap">
+      <div id="stamp" class="stamp"></div>
+    </div>
+    <p class="stamp-meta" id="stampMeta"></p>
+    <p class="borderline-flag" id="borderlineFlag" style="display:none;">⚑ Borderline case — sent to the analyst review queue</p>
+
+    <div class="ledger-rows" id="explainRows"></div>
+  </div>
+</div>
+
+<script>
+const roleButtons = document.querySelectorAll('#roleToggle button');
+roleButtons.forEach(btn => btn.addEventListener('click', () => {
+  roleButtons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}));
+
+document.getElementById('appForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const payload = Object.fromEntries(new FormData(form).entries());
+
+  const res = await fetch('/predict', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+
+  const stamp = document.getElementById('stamp');
+  stamp.textContent = data.decision;
+  stamp.className = 'stamp ' + (data.decision === 'Approve' ? 'approve' : 'decline');
+
+  document.getElementById('stampMeta').textContent =
+    `Approval probability ${(data.approve_probability*100).toFixed(1)}% · High-risk probability ${(data.high_risk_probability*100).toFixed(1)}%`;
+
+  document.getElementById('borderlineFlag').style.display = data.borderline ? 'block' : 'none';
+
+  const rows = document.getElementById('explainRows');
+  rows.innerHTML = '<p class="eyebrow" style="margin-top:24px;">Top factors behind this decision</p>' +
+    data.explanation.map(item => {
+      const cls = item.impact > 0 ? 'impact-pos' : 'impact-neg';
+      const sign = item.impact > 0 ? '+' : '';
+      return `<div class="ledger-row"><span class="feat">${item.feature}</span><span class="${cls}">${sign}${item.impact}</span></div>`;
+    }).join('');
+
+  document.getElementById('result').style.display = 'block';
+});
+</script>
+{% endblock %}

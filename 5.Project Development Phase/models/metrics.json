@@ -1,0 +1,155 @@
+{
+  "best_model_name": "Logistic Regression",
+  "used_real_xgboost": false,
+  "results": {
+    "Logistic Regression": {
+      "best_params": {
+        "C": 0.01,
+        "penalty": "l2",
+        "solver": "lbfgs"
+      },
+      "accuracy": 0.7633,
+      "precision": 0.9852,
+      "recall": 0.7621,
+      "f1": 0.8594,
+      "roc_auc": 0.8645,
+      "confusion_matrix": [
+        [
+          48,
+          13
+        ],
+        [
+          271,
+          868
+        ]
+      ],
+      "train_seconds": 0.3
+    },
+    "Decision Tree": {
+      "best_params": {
+        "max_depth": 5,
+        "min_samples_leaf": 10
+      },
+      "accuracy": 0.73,
+      "precision": 0.9788,
+      "recall": 0.7313,
+      "f1": 0.8372,
+      "roc_auc": 0.7807,
+      "confusion_matrix": [
+        [
+          43,
+          18
+        ],
+        [
+          306,
+          833
+        ]
+      ],
+      "train_seconds": 1.1
+    },
+    "Random Forest": {
+      "best_params": {
+        "max_depth": 6,
+        "min_samples_leaf": 5,
+        "n_estimators": 200
+      },
+      "accuracy": 0.8592,
+      "precision": 0.9774,
+      "recall": 0.8718,
+      "f1": 0.9216,
+      "roc_auc": 0.8611,
+      "confusion_matrix": [
+        [
+          38,
+          23
+        ],
+        [
+          146,
+          993
+        ]
+      ],
+      "train_seconds": 32.5
+    },
+    "XGBoost": {
+      "best_params": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "n_estimators": 100
+      },
+      "accuracy": 0.9508,
+      "precision": 0.9569,
+      "recall": 0.993,
+      "f1": 0.9746,
+      "roc_auc": 0.8403,
+      "confusion_matrix": [
+        [
+          10,
+          51
+        ],
+        [
+          8,
+          1131
+        ]
+      ],
+      "train_seconds": 57.9
+    }
+  },
+  "feature_importance": {
+    "credit_history_months": 1.0960025225085324,
+    "num_credit_lines": 0.5727113973365069,
+    "annual_income": 0.5571398592872252,
+    "existing_loan_balance": 0.5287892460052513,
+    "employment_years": 0.3451125569965647,
+    "age_years": 0.18983949607519063,
+    "family_size": 0.1522936228201582,
+    "income_type_Pensioner": 0.14048862586027344,
+    "occupation_type_Accountants": 0.11962246445277379,
+    "occupation_type_Managers": 0.11121888767215082,
+    "income_type_Commercial associate": 0.10131564736787148,
+    "num_children": 0.09547753151612759,
+    "housing_type_House / apartment": 0.08258573489054553,
+    "income_type_State servant": 0.081306028338023,
+    "education_Higher education": 0.0708300983073038,
+    "occupation_type_IT staff": 0.07023523990889698,
+    "housing_type_Municipal apartment": 0.06007285062044231,
+    "occupation_type_Laborers": 0.05333732443857856,
+    "housing_type_With parents": 0.050757490533713125,
+    "owns_car": 0.04718607986405283,
+    "education_Incomplete higher": 0.04273865558961275,
+    "occupation_type_Sales staff": 0.03775748342642422,
+    "education_Secondary / secondary special": 0.0360724218240889,
+    "income_type_Student": 0.03369706273362053,
+    "family_status_Separated": 0.03333246464918081,
+    "family_status_Single / not married": 0.03283248480961228,
+    "occupation_type_Core staff": 0.03174284795079859,
+    "occupation_type_Drivers": 0.03013668025771007,
+    "family_status_Married": 0.03012793444248139,
+    "family_status_Civil marriage": 0.021575885513739027,
+    "owns_realty": 0.02119720600546337,
+    "family_status_Widow": 0.015145113559156341,
+    "occupation_type_Medicine staff": 0.01385789295291894,
+    "housing_type_Rented apartment": 0.011452253911419087,
+    "education_Lower secondary": 0.0029502106829074476,
+    "income_type_Working": 0.0015998758752143163
+  },
+  "categorical_columns": [
+    "income_type",
+    "education",
+    "family_status",
+    "housing_type",
+    "occupation_type"
+  ],
+  "numeric_columns": [
+    "age_years",
+    "annual_income",
+    "employment_years",
+    "num_children",
+    "family_size",
+    "owns_car",
+    "owns_realty",
+    "credit_history_months",
+    "existing_loan_balance",
+    "num_credit_lines"
+  ],
+  "n_rows_trained_on": 6000
+}

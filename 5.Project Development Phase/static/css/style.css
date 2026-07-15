@@ -1,0 +1,250 @@
+:root {
+  --ink: #0E1420;
+  --surface: #161D2E;
+  --surface-2: #1D2538;
+  --rule: #2A3348;
+  --text: #EDEFF4;
+  --muted: #8B93A7;
+  --teal: #2FBF9A;
+  --amber: #E3A62F;
+  --crimson: #E5484D;
+  --display: 'Fraunces', serif;
+  --body: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.ledger-frame {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 0 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand-mark {
+  font-family: var(--display);
+  font-size: 28px;
+  color: var(--teal);
+}
+.brand-name {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.topnav { display: flex; gap: 28px; }
+.topnav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.topnav a:hover { color: var(--text); border-color: var(--teal); }
+
+.content { flex: 1; padding-top: 40px; }
+
+.footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 48px;
+  padding-top: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
+h1.page-title {
+  font-family: var(--display);
+  font-size: 40px;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+p.page-sub {
+  color: var(--muted);
+  margin: 0 0 36px;
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 10px;
+}
+
+/* --- Form / ledger sheet --- */
+.sheet {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 32px;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; }
+@media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.field label {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+.field select, .field input {
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-family: var(--body);
+  font-size: 14px;
+}
+.field select:focus, .field input:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+.role-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.role-toggle button {
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: var(--body);
+  cursor: pointer;
+}
+.role-toggle button.active {
+  border-color: var(--teal);
+  color: var(--text);
+  background: rgba(47,191,154,0.1);
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: #06231C;
+  border: none;
+  padding: 13px 26px;
+  border-radius: 4px;
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.btn-primary:hover { filter: brightness(1.08); }
+
+/* --- Verdict stamp (signature element) --- */
+.verdict-wrap { display: flex; justify-content: center; margin: 36px 0 8px; }
+.stamp {
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 40px;
+  border: 3px solid currentColor;
+  border-radius: 4px;
+  transform: rotate(-3deg);
+  display: inline-block;
+}
+.stamp.approve { color: var(--teal); }
+.stamp.decline { color: var(--crimson); }
+.stamp-meta {
+  text-align: center;
+  font-family: var(--mono);
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 14px;
+}
+.borderline-flag {
+  text-align: center;
+  color: var(--amber);
+  font-family: var(--mono);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+/* --- Ledger rows for explanation / notifications --- */
+.ledger-rows { border-top: 1px solid var(--rule); margin-top: 28px; }
+.ledger-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.ledger-row .feat { color: var(--text); }
+.ledger-row .impact-pos { color: var(--crimson); }
+.ledger-row .impact-neg { color: var(--teal); }
+
+/* --- Dashboard cards --- */
+.card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+@media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 20px;
+}
+.metric-card .label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;}
+.metric-card .value { font-family: var(--display); font-size: 26px; margin-top: 8px; }
+.metric-card.best { border-color: var(--teal); }
+
+.chart-block { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 24px; margin-bottom: 28px; }
+.chart-block h3 { font-family: var(--display); font-weight: 600; margin: 0 0 16px; font-size: 18px; }
+
+table.compare { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+table.compare th, table.compare td { text-align: right; padding: 10px 8px; border-bottom: 1px solid var(--rule); }
+table.compare th:first-child, table.compare td:first-child { text-align: left; }
+table.compare tr.best-row { color: var(--teal); }
+
+.empty-state { color: var(--muted); font-family: var(--mono); font-size: 14px; padding: 40px 0; text-align: center; }
+
+.badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+}

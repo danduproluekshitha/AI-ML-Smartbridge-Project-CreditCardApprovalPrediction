@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Ledger — Review Queue{% endblock %}
+{% block content %}
+<p class="eyebrow">Analyst review queue</p>
+<h1 class="page-title">Borderline cases</h1>
+<p class="page-sub">Applications where the model's high-risk probability landed between 40% and 60% are flagged here automatically for manual review, instead of being auto-decisioned.</p>
+
+<div class="sheet">
+  {% if notifications %}
+    <div class="ledger-rows">
+      {% for n in notifications %}
+      <div class="ledger-row" style="flex-direction:column; align-items:flex-start; gap:6px; padding:16px 0;">
+        <div style="display:flex; justify-content:space-between; width:100%;">
+          <span class="feat">{{ n.applicant_summary.income_type }} · income ${{ n.applicant_summary.annual_income }} · {{ n.applicant_summary.employment_years }} yrs employed</span>
+          <span class="badge">review · {{ (n.high_risk_probability*100) | round(1) }}% high-risk</span>
+        </div>
+        <span style="color: var(--muted); font-size:12px;">{{ n.note }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">No borderline cases yet. Score an application to populate this queue.</div>
+  {% endif %}
+</div>
+{% endblock %}

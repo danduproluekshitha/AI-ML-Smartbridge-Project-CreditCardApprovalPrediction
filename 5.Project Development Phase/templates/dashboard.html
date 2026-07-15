@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Ledger — Model Dashboard{% endblock %}
+{% block content %}
+<p class="eyebrow">Model performance</p>
+<h1 class="page-title">Four models, one decision</h1>
+<p class="page-sub">Logistic Regression, Decision Tree, Random Forest, and XGBoost were each tuned with grid search and evaluated on the same held-out test split. The best model by ROC-AUC is promoted to production.</p>
+
+<div class="card-grid" id="cardGrid"></div>
+
+<div class="chart-block">
+  <h3>Model comparison</h3>
+  <table class="compare" id="compareTable">
+    <thead><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC-AUC</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<div class="chart-block">
+  <h3>Approval rate by income band</h3>
+  <canvas id="incomeChart" height="90"></canvas>
+</div>
+
+<div class="chart-block">
+  <h3>Top features driving the decision ({{ metrics.best_model_name }})</h3>
+  <canvas id="importanceChart" height="110"></canvas>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const teal = '#2FBF9A', amber = '#E3A62F', crimson = '#E5484D', muted = '#8B93A7', text='#EDEFF4', rule='#2A3348';
+Chart.defaults.color = muted;
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.borderColor = rule;
+
+fetch('/api/metrics').then(r => r.json()).then(data => {
+  const best = data.best_model;
+  const bestMetrics = data.model_comparison[best];
+
+  document.getElementById('cardGrid').innerHTML = `
+    <div class="metric-card best"><div class="label">Best model</div><div class="value">${best}</div></div>
+    <div class="metric-card"><div class="label">ROC-AUC</div><div class="value">${bestMetrics.roc_auc}</div></div>
+    <div class="metric-card"><div class="label">Accuracy</div><div class="value">${bestMetrics.accuracy}</div></div>
+    <div class="metric-card"><div class="label">F1 score</div><div class="value">${bestMetrics.f1}</div></div>
+  `;
+
+  const tbody = document.querySelector('#compareTable tbody');
+  Object.entries(data.model_comparison).forEach(([name, m]) => {
+    const row = document.createElement('tr');
+    if (name === best) row.className = 'best-row';
+    row.innerHTML = `<td>${name}</td><td>${m.accuracy}</td><td>${m.precision}</td><td>${m.recall}</td><td>${m.f1}</td><td>${m.roc_auc}</td>`;
+    tbody.appendChild(row);
+  });
+
+  new Chart(document.getElementById('incomeChart'), {
+    type: 'line',
+    data: {
+      labels: data.income_vs_approval.labels,
+      datasets: [{
+        label: 'Approval rate (%)',
+        data: data.income_vs_approval.approval_rate,
+        borderColor: teal,
+        backgroundColor: 'rgba(47,191,154,0.12)',
+        fill: true,
+        tension: 0.3,
+      }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { x: { grid: { color: rule } }, y: { grid: { color: rule } } } }
+  });
+
+  const impEntries = Object.entries(data.feature_importance);
+  new Chart(document.getElementById('importanceChart'), {
+    type: 'bar',
+    data: {
+      labels: impEntries.map(e => e[0]),
+      datasets: [{ label: 'Importance', data: impEntries.map(e => e[1]), backgroundColor: amber }]
+    },
+    options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { grid: { color: rule } }, y: { grid: { display: false } } } }
+  });
+});
+</script>
+{% endblock %}
