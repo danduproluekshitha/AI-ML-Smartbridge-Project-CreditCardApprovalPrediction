@@ -227,6 +227,9 @@ The model uses the following applicant information:
 
 ---
 
+## Demo Link
+https://drive.google.com/file/d/1O-DPSBp1f3qhfNnjOQd4xMP2Fg1itJ7K/view?usp=drive_link
+
 ## 👥 Team Members
 
 This project was developed as an academic team project by:
